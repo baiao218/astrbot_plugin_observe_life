@@ -55,6 +55,12 @@
     },
     "default": 400
   },
+  "inject_umo": {
+    "description": "只在这些会话里注入观测",
+    "type": "string",
+    "hint": "逗号分隔的 unified_msg_origin。留空则跟随 care_umo；两个都留空才会对所有会话注入（不建议——别的好友来聊天时，她会知道你此刻在做什么）。填 * 表示不限制。",
+    "default": ""
+  },
   "care_enable": {
     "description": "让她在特定情况下主动开口",
     "type": "bool",

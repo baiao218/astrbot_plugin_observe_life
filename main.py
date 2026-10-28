@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
@@ -143,9 +144,27 @@ class ObserveLifePlugin(Star):
 
     # ---------- 对话注入 ----------
 
+    def _inject_targets(self) -> set[str]:
+        """观测块只发给这些会话。返回空集表示不限制。"""
+        raw = str(self.settings.get("inject_umo") or "").strip()
+        if raw == "*":
+            return set()
+        if raw:
+            return {x.strip() for x in re.split(r"[,，\s]+", raw) if x.strip()}
+
+        # 没单独配就跟随主动消息的会话——通常这两者就是同一个人
+        care = str(self.settings.get("care_umo") or "").strip()
+        if care and care != "*":
+            return {x.strip() for x in re.split(r"[,，\s]+", care) if x.strip()}
+        return set()
+
     @filter.on_llm_request()
     async def inject_observation(self, event: AstrMessageEvent, req: Any) -> None:
         if self._paused or not bool(self.settings.get("inject_enable", True)):
+            return
+        targets = self._inject_targets()
+        if targets and event.unified_msg_origin not in targets:
+            # 别的好友来聊天时，不该知道此刻屏幕前的人在做什么
             return
         try:
             block = build_injection(self.store, self.interval, self.idle_timeout)
@@ -341,6 +360,13 @@ class ObserveLifePlugin(Star):
 
         lines = ["【观测状态】"]
         lines.append("采集：" + ("已暂停" if self._paused else "进行中"))
+        targets = self._inject_targets()
+        if not bool(self.settings.get("inject_enable", True)):
+            lines.append("注入：已关闭")
+        elif targets:
+            lines.append(f"注入：仅 {len(targets)} 个会话（{'、'.join(sorted(targets)[:2])}）")
+        else:
+            lines.append("注入：所有会话（别的好友也会看到她看到的）")
         lines.append(f"采样间隔：{self.interval} 秒，本次已采 {self._sample_count} 次")
         lines.append(f"空闲判定：{self.idle_timeout} 秒")
 

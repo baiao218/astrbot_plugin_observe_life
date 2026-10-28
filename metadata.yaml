@@ -39,7 +39,7 @@ help: |
 
   需要先填 `care_umo`（会话的 unified_msg_origin，例如 `default:FriendMessage:123456`），
   留空则不会主动发消息。主动消息用当前人格的口吻生成，不报数字、不说教。
-version: 1.1.0
+version: 1.2.0
 author: baiao218
 repo: https://github.com/baiao218/astrbot_plugin_observe_life
 astrbot_version: ">=4.17.0"

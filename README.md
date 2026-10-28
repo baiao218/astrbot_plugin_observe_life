@@ -111,6 +111,7 @@ care_umo: ""                 # 填 unified_msg_origin 才会主动发消息，�
 | --- | --- | --- | --- |
 | `inject_enable` | bool | `true` | 每轮对话附上观测块 |
 | `inject_max_chars` | int | `400` | 注入块最长字数，防止长标题撑爆上下文 |
+| `inject_umo` | string | 空 | 只向这些会话注入观测，逗号分隔的 `unified_msg_origin`。留空跟随 `care_umo`；两者都空才注入所有会话（不建议——别的好友来聊天时她会知道你此刻在做什么） |
 
 ### 主动关心
 
