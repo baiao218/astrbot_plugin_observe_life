@@ -1,0 +1,129 @@
+{
+  "enable": {
+    "description": "启用观测",
+    "type": "bool",
+    "hint": "关闭后完全不采集，也不会往对话里注入任何东西。",
+    "default": true
+  },
+  "sample_interval": {
+    "description": "采样间隔（秒）",
+    "type": "int",
+    "hint": "每隔多少秒抓一次当前前台窗口。太小会增加磁盘写入，太大会漏掉短暂切换。45 秒是个平衡点。",
+    "slider": {
+      "min": 15,
+      "max": 300,
+      "step": 15
+    },
+    "default": 45
+  },
+  "idle_timeout": {
+    "description": "多久没操作就算「不在电脑前」（秒）",
+    "type": "int",
+    "hint": "键盘鼠标静默超过这个时长，那段时间不计入活动。看视频和玩游戏不受此限制（人本来就不动鼠标）。600 秒比较合适。",
+    "slider": {
+      "min": 60,
+      "max": 3600,
+      "step": 60
+    },
+    "default": 600
+  },
+  "retention_days": {
+    "description": "记录保留天数",
+    "type": "int",
+    "hint": "超过这个天数的日记录会被自动删除。一天约 100KB。",
+    "slider": {
+      "min": 1,
+      "max": 90,
+      "step": 1
+    },
+    "default": 14
+  },
+  "inject_enable": {
+    "description": "在对话里告诉她你此刻在做什么",
+    "type": "bool",
+    "hint": "每轮回复前附上一小段观测（约 100~200 字）。关掉后她就完全不知道你在做什么了。",
+    "default": true
+  },
+  "inject_max_chars": {
+    "description": "注入块最长字数",
+    "type": "int",
+    "hint": "防止窗口标题过长把上下文撑爆。400 足够放下当前窗口、近半小时和今日概况。",
+    "slider": {
+      "min": 100,
+      "max": 1500,
+      "step": 50
+    },
+    "default": 400
+  },
+  "care_enable": {
+    "description": "让她在特定情况下主动开口",
+    "type": "bool",
+    "hint": "长时间专注不休息、或者凌晨还在用电脑时，她会主动发一条。频率受下面三项限制。",
+    "default": true
+  },
+  "care_focus_minutes": {
+    "description": "连续专注多少分钟算「该起来了」",
+    "type": "int",
+    "hint": "只统计写代码、写文档、做设计、在终端干活这几类，聊天和看视频不算。",
+    "slider": {
+      "min": 30,
+      "max": 240,
+      "step": 10
+    },
+    "default": 90
+  },
+  "care_late_hour": {
+    "description": "几点之后算「深夜」",
+    "type": "int",
+    "hint": "填 1 表示凌晨 1 点直到天亮算深夜；填 23 表示从 23 点跨过午夜算起。一晚最多触发一次。",
+    "slider": {
+      "min": 0,
+      "max": 23,
+      "step": 1
+    },
+    "default": 1
+  },
+  "care_check_interval": {
+    "description": "多久检查一次要不要主动开口（秒）",
+    "type": "int",
+    "slider": {
+      "min": 60,
+      "max": 1800,
+      "step": 60
+    },
+    "default": 300
+  },
+  "care_daily_limit": {
+    "description": "每天最多主动开口几次",
+    "type": "int",
+    "hint": "包含专注提醒和深夜提醒。设太大容易变成唠叨。",
+    "slider": {
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    "default": 2
+  },
+  "care_min_gap_hours": {
+    "description": "两次主动开口至少间隔几小时",
+    "type": "int",
+    "slider": {
+      "min": 1,
+      "max": 12,
+      "step": 1
+    },
+    "default": 4
+  },
+  "care_umo": {
+    "description": "主动消息发到哪个会话",
+    "type": "string",
+    "hint": "填 unified_msg_origin，例如 default:FriendMessage:123456。留空则不发主动消息。",
+    "default": ""
+  },
+  "persona_id": {
+    "description": "主动开口时用哪个人格",
+    "type": "string",
+    "hint": "留空则跟随当前 agent 使用的人格（推荐留空）。填 02 就固定用病娇版。",
+    "default": ""
+  }
+}

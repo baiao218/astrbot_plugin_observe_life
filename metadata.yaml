@@ -1,0 +1,58 @@
+name: astrbot_plugin_observe_life
+display_name: 观测生活
+short_desc: 让她知道你此刻在电脑前做什么——只在本机采集前台窗口，不截图、不联网
+desc: |
+  给她一双看得见你日常的眼睛。
+
+  插件在本机定时采样当前前台窗口（进程名 + 窗口标题 + 键鼠空闲时长），把零散的采样合并成连续的
+  「活动片段」，然后做三件事：
+
+  1. **对话注入** —— 每轮回复前，把「她此刻看到的」作为一小段内容附在用户消息末尾
+     （约 100~200 字）。挂在附加块而不是 system prompt 上，是为了不破坏 DeepSeek 等模型的前缀缓存。
+  2. **主动关心** —— 连续专注太久、或者深夜还亮着屏幕时，她可能主动发来一句话。
+     有每日次数上限和最小间隔，不会变成唠叨。
+  3. **供日记取用** —— 把今天的活动整理成摘要文件，`astrbot_plugin_diary_qzone` 会读它。
+
+  **隐私边界**
+
+  - 只调用 Windows 本机 Win32 API 读窗口标题，**不截图、不录屏、不读文件内容**
+  - 不发起任何网络请求，不向任何服务器上传
+  - 数据只写到 AstrBot 的 `data/plugin_data/` 下，超过保留天数自动删除
+  - `观测暂停` 可以随时立刻停手，`观测清除` 删掉今天的记录
+  - 聊天软件、密码管理器等敏感窗口只归类、不记录具体标题
+  - 看视频、玩游戏时不会因为键鼠长时间不动而误判为「人不在」
+
+  **平台限制**
+
+  采集依赖 Windows API，目前仅支持在 Windows 上运行 AstrBot。非 Windows 环境会自动跳过采集，
+  不会报错，但也不会有任何观测数据。
+help: |
+  **命令（管理员）**
+
+  - `/观测状态` —— 采集是否在跑、当前窗口、今天的时长分布与最长连续专注
+  - `/观测今天` —— 按时间顺序列出今天切换过的窗口（只列 2 分钟以上的片段）
+  - `/观测暂停` —— 立刻停止记录
+  - `/观测继续` —— 恢复记录
+  - `/观测清除` —— 删除今天的记录文件
+
+  **主动消息**
+
+  需要先填 `care_umo`（会话的 unified_msg_origin，例如 `default:FriendMessage:123456`），
+  留空则不会主动发消息。主动消息用当前人格的口吻生成，不报数字、不说教。
+version: 1.1.0
+author: baiao218
+repo: https://github.com/baiao218/astrbot_plugin_observe_life
+astrbot_version: ">=4.17.0"
+support_platforms:
+  - aiocqhttp
+  - telegram
+  - qq_official
+  - lark
+  - discord
+social_link: https://github.com/baiao218
+tags:
+  - 观测
+  - 主动消息
+  - 人格
+  - Windows
+  - 隐私友善
